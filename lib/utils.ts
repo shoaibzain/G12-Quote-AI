@@ -13,3 +13,9 @@ export function formatCurrency(amount: number): string {
     maximumFractionDigits: 0,
   }).format(amount)
 }
+
+export const PAGE_BREAK_CLASS = 'pdf-page-break';
+
+export function getElementsWithPageBreaks(element: HTMLElement): HTMLElement[] {
+  return Array.from(element.getElementsByClassName(PAGE_BREAK_CLASS)) as HTMLElement[];
+}

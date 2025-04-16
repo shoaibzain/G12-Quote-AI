@@ -9,6 +9,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Logo } from "./logo";
 import Link from "next/link";
 import Image from "next/image";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface QuotationPreviewProps {
   data: {
@@ -43,6 +44,7 @@ export default function QuotationPreview({
   onBack,
 }: QuotationPreviewProps) {
   const [isGenerating, setIsGenerating] = useState(false);
+  const isMobile = useIsMobile();
 
   const downloadPDF = async () => {
     setIsGenerating(true);
@@ -55,25 +57,55 @@ export default function QuotationPreview({
 
     try {
       const canvas = await html2canvas(quotationElement, {
-        scale: 2,
+        scale: 3,
         logging: false,
         useCORS: true,
         backgroundColor: "#ffffff",
+        windowWidth: 1200,
+        onclone: (clonedDoc) => {
+          const element = clonedDoc.getElementById("quotation-preview");
+          if (element) {
+            element.style.padding = "20px";
+            element.style.margin = "0";
+            element.style.width = "1200px";
+          }
+        }
       });
 
-      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
+        compress: true
       });
 
-      const imgWidth = 210;
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      
+      if (isMobile) {
+        // Create a single optimized page for mobile
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        
+        // Add image with high quality settings
+        const imgData = canvas.toDataURL('image/jpeg', 1.0);
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+      } else {
+        // Desktop version - single page
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        const imgWidth = pageWidth;
+        const imgHeight = (canvas.height * imgWidth) / canvas.width;
+        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+      }
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+      // Add metadata
+      pdf.setProperties({
+        title: `G12 Business Setup Quotation - ${data.clientInfo.name}`,
+        subject: 'Business Setup Quotation',
+        author: 'G12 Business Services',
+        keywords: 'business setup, UAE, quotation',
+        creator: 'G12 Quote Generator'
+      });
 
-      // Create a sanitized client name for the filename (remove special characters)
       const clientName = data.clientInfo.name.replace(/[^a-zA-Z0-9]/g, "_");
       pdf.save(`G12_Quotation_${clientName}_${data.quotationNumber}.pdf`);
     } catch (error) {
@@ -111,6 +143,7 @@ export default function QuotationPreview({
         </div>
 
         <CardContent className="p-4 md:p-6">
+          {/* Client and Business Info */}
           <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
             <div>
               <h3 className="text-lg font-semibold text-[#131313] mb-3">
@@ -174,6 +207,7 @@ export default function QuotationPreview({
               Quotation Details
             </h3>
 
+            {/* Services Section */}
             <div className="mb-6">
               <h4 className="font-semibold mb-2">Services Included:</h4>
               <div className="bg-gray-50 p-4 rounded-md">
@@ -219,6 +253,7 @@ export default function QuotationPreview({
               </div>
             </div>
 
+            {/* Cost Breakdown Section */}
             <div className="bg-gray-50 p-3 md:p-4 rounded-md mb-4">
               <h4 className="font-semibold mb-2">Cost Breakdown:</h4>
               <div className="space-y-2 text-sm md:text-base">
@@ -265,6 +300,7 @@ export default function QuotationPreview({
               </div>
             )}
 
+            {/* Timeline Section */}
             <div className="border p-4 rounded-md mb-6">
               <h4 className="font-semibold mb-2">Timeline:</h4>
               <div className="space-y-1 text-sm">
@@ -279,13 +315,14 @@ export default function QuotationPreview({
                 </p>
                 {Number.parseInt(data.businessSetup.visas) > 0 && (
                   <p>
-                    <span className="font-semibold">Visa Processing:</span> 15-20
-                    working days per visa
+                    <span className="font-semibold">Visa Processing:</span>{" "}
+                    15-20 working days per visa
                   </p>
                 )}
               </div>
             </div>
 
+            {/* Terms & Conditions */}
             <div className="border-t border-b py-4 my-4">
               <h4 className="font-semibold mb-2">Terms & Conditions:</h4>
               <ul className="list-disc list-inside space-y-1 text-xs text-gray-600">
@@ -313,6 +350,7 @@ export default function QuotationPreview({
               </ul>
             </div>
 
+            {/* Footer Section */}
             <div className="mt-6">
               <h4 className="font-semibold mb-2 text-[#d6a456] text-center">
                 G12 Business Services
@@ -320,7 +358,8 @@ export default function QuotationPreview({
               <div className="text-sm text-center">
                 <p className="sm:w-[33%] m-auto">
                   Office 1906, Al Shafar Tower 1, Barsha Heights (Tecom), Dubai,
-                  UAE P.O. Box: 123456</p>
+                  UAE P.O. Box: 123456
+                </p>
                 <div className="mt-2">
                   <Link
                     href="mailto:info@g12.ae"
@@ -357,47 +396,52 @@ export default function QuotationPreview({
           </div>
         </CardContent>
       </Card>
-      <div className="md:col-span-2 flex flex-col items-center gap-4 mt-6">
-            <h3 className="text-lg font-semibold text-center">
-              Here are the next steps to <span className="text-[#d6a456] text-2xl uppercase">#GenerateSuccess</span> in the UAE:
-            </h3>
 
-            <Button
-              className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
-              onClick={downloadPDF}
-              disabled={isGenerating}
-            >
-              {isGenerating ? "Generating PDF..." : "Download Quotation"}
-            </Button>
-            <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-             <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[100px] w-[100px]">
-             <Image
-                src="/sonia.png" // Updated to use Next.js Image component
-                alt="Sonia"
-                width={100} // Adjusted width for the image
-                height={100} // Adjusted height for the image
-                
-              />
-             </div>
-              <div className="text-center">
-                <h4 className="text-lg font-semibold text-gray-800">Sonia</h4>
-                <p className="text-sm text-gray-600">Your Success Manager</p>
-              </div>
-              <Button
-                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6 py-2 uppercase rounded-full shadow-lg"
-                onClick={() => {
-                  // Logic to forward the quotation to Sonia's WhatsApp with the quotation attached
-                  const message = encodeURIComponent(
-                    `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
-                  );
-                  const whatsappUrl = `https://wa.me/971525850087?text=${message}`; // Replace with Sonia's actual number
-                  window.open(whatsappUrl, "_blank");
-                }}
-              >
-                Speak to Your Success Manager
-              </Button>
-            </div>
+      {/* Success Section */}
+      <div className="md:col-span-2 flex flex-col items-center gap-4 mt-6">
+        <h3 className="text-lg font-semibold text-center">
+          Here are the next steps to{" "}
+          <span className="text-[#d6a456] text-2xl uppercase">
+            #GenerateSuccess
+          </span>{" "}
+          in the UAE:
+        </h3>
+
+        <Button
+          className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
+          onClick={downloadPDF}
+          disabled={isGenerating}
+        >
+          {isGenerating ? "Generating PDF..." : "Download Quotation"}
+        </Button>
+        <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+          <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[100px] w-[100px]">
+            <Image
+              src="/sonia.png" // Updated to use Next.js Image component
+              alt="Sonia"
+              width={100} // Adjusted width for the image
+              height={100} // Adjusted height for the image
+            />
           </div>
+          <div className="text-center">
+            <h4 className="text-lg font-semibold text-gray-800">Sonia</h4>
+            <p className="text-sm text-gray-600">Your Success Manager</p>
+          </div>
+          <Button
+            className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6 py-2 uppercase rounded-full shadow-lg"
+            onClick={() => {
+              // Logic to forward the quotation to Sonia's WhatsApp with the quotation attached
+              const message = encodeURIComponent(
+                `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
+              );
+              const whatsappUrl = `https://wa.me/971525850087?text=${message}`; // Replace with Sonia's actual number
+              window.open(whatsappUrl, "_blank");
+            }}
+          >
+            Speak to Your Success Manager
+          </Button>
+        </div>
+      </div>
     </div>
   );
 }
