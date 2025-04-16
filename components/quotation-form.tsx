@@ -618,7 +618,7 @@ export default function QuotationForm() {
                   const message = encodeURIComponent(
                     `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
                   );
-                  const whatsappUrl = `https://wa.me/923132272696?text=${message}`; // Replace with Sonia's actual number
+                  const whatsappUrl = `https://wa.me/971525850087?text=${message}`; // Replace with Sonia's actual number
                   window.open(whatsappUrl, "_blank");
                 }}
               >
