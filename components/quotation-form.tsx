@@ -572,60 +572,7 @@ export default function QuotationForm() {
       ) : (
         <>
           <QuotationPreview data={quotationData} onBack={handleBackToForm} />
-          <div className="md:col-span-2 flex flex-col items-center gap-4 mt-6">
-            <h3 className="text-lg font-semibold text-center">
-              Here are the next steps to <span className="text-[#d6a456] text-2xl uppercase">#GenerateSuccess</span> in the UAE:
-            </h3>
-
-            <Button
-              className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
-              onClick={() => {
-                // Logic to download the quotation
-                const element = document.createElement("a");
-                const file = new Blob(
-                  [JSON.stringify(quotationData, null, 2)],
-                  {
-                    type: "application/json",
-                  }
-                );
-                element.href = URL.createObjectURL(file);
-                element.download = "quotation.json";
-                document.body.appendChild(element);
-                element.click();
-              }}
-            >
-              Download Quotation
-            </Button>
-
-            <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-             <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[100px] w-[100px]">
-             <Image
-                src="/sonia.png" // Updated to use Next.js Image component
-                alt="Sonia"
-                width={100} // Adjusted width for the image
-                height={100} // Adjusted height for the image
-                
-              />
-             </div>
-              <div className="text-center">
-                <h4 className="text-lg font-semibold text-gray-800">Sonia</h4>
-                <p className="text-sm text-gray-600">Your Success Manager</p>
-              </div>
-              <Button
-                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6 py-2 uppercase rounded-full shadow-lg"
-                onClick={() => {
-                  // Logic to forward the quotation to Sonia's WhatsApp with the quotation attached
-                  const message = encodeURIComponent(
-                    `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
-                  );
-                  const whatsappUrl = `https://wa.me/971525850087?text=${message}`; // Replace with Sonia's actual number
-                  window.open(whatsappUrl, "_blank");
-                }}
-              >
-                Speak to Your Success Manager
-              </Button>
-            </div>
-          </div>
+        
         </>
       )}
     </div>

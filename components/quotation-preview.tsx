@@ -8,6 +8,7 @@ import html2canvas from "html2canvas";
 import { formatCurrency } from "@/lib/utils";
 import { Logo } from "./logo";
 import Link from "next/link";
+import Image from "next/image";
 
 interface QuotationPreviewProps {
   data: {
@@ -98,9 +99,9 @@ export default function QuotationPreview({
       </div>
 
       <Card className="overflow-hidden" id="quotation-preview">
-        <div className="bg-[#131313] p-6 text-white">
+        <div className="bg-[#131313] sm:p-6 p-4 text-white">
           <div className="flex justify-between items-center">
-            <Logo size="medium" href="https://g12.ae" />
+            <Logo size="small" href="https://g12.ae" />
             <div className="text-right">
               <h3 className="text-xl font-semibold">QUOTATION</h3>
               <p className="text-sm">#{data.quotationNumber}</p>
@@ -115,21 +116,21 @@ export default function QuotationPreview({
               <h3 className="text-lg font-semibold text-[#131313] mb-3">
                 Client Information
               </h3>
-              <div className="space-y-2">
+              <div className="sm:space-y-2 space-y-1 sm:text-base text-sm">
                 <p>
-                  <span className="font-medium">Name:</span>{" "}
+                  <span className="font-semibold">Name:</span>{" "}
                   {data.clientInfo.name}
                 </p>
                 <p>
-                  <span className="font-medium">Mobile:</span>{" "}
+                  <span className="font-semibold">Mobile:</span>{" "}
                   {data.clientInfo.mobile}
                 </p>
                 <p>
-                  <span className="font-medium">Email:</span>{" "}
+                  <span className="font-semibold">Email:</span>{" "}
                   {data.clientInfo.email}
                 </p>
                 <p>
-                  <span className="font-medium">Nationality:</span>{" "}
+                  <span className="font-semibold">Nationality:</span>{" "}
                   {data.clientInfo.nationality}
                 </p>
               </div>
@@ -139,29 +140,29 @@ export default function QuotationPreview({
               <h3 className="text-lg font-semibold text-[#131313] mb-3">
                 Business Setup Details
               </h3>
-              <div className="space-y-2">
+              <div className="sm:space-y-2 space-y-1 sm:text-base text-sm">
                 <p>
-                  <span className="font-medium">Type:</span>{" "}
+                  <span className="font-semibold">Type:</span>{" "}
                   {data.businessSetup.type}
                 </p>
                 <p>
-                  <span className="font-medium">Emirates:</span>{" "}
+                  <span className="font-semibold">Emirates:</span>{" "}
                   {data.businessSetup.emirates}
                 </p>
                 <p>
-                  <span className="font-medium">Business Activities:</span>{" "}
+                  <span className="font-semibold">Business Activities:</span>{" "}
                   {data.businessSetup.businessActivities.join(", ")}
                 </p>
                 <p>
-                  <span className="font-medium">Office Space Required:</span>{" "}
+                  <span className="font-semibold">Office Space Required:</span>{" "}
                   {data.businessSetup.officeSpace}
                 </p>
                 <p>
-                  <span className="font-medium">Number of Shareholders:</span>{" "}
+                  <span className="font-semibold">Number of Shareholders:</span>{" "}
                   {data.businessSetup.shareholders}
                 </p>
                 <p>
-                  <span className="font-medium">Number of Visas:</span>{" "}
+                  <span className="font-semibold">Number of Visas:</span>{" "}
                   {data.businessSetup.visas}
                 </p>
               </div>
@@ -174,7 +175,7 @@ export default function QuotationPreview({
             </h3>
 
             <div className="mb-6">
-              <h4 className="font-medium mb-2">Services Included:</h4>
+              <h4 className="font-semibold mb-2">Services Included:</h4>
               <div className="bg-gray-50 p-4 rounded-md">
                 <ul className="list-disc list-inside space-y-1 text-sm">
                   {data.businessSetup.type === "Freezone" ? (
@@ -219,7 +220,7 @@ export default function QuotationPreview({
             </div>
 
             <div className="bg-gray-50 p-3 md:p-4 rounded-md mb-4">
-              <h4 className="font-medium mb-2">Cost Breakdown:</h4>
+              <h4 className="font-semibold mb-2">Cost Breakdown:</h4>
               <div className="space-y-2 text-sm md:text-base">
                 <div className="flex justify-between flex-wrap">
                   <span>Base Setup Cost:</span>
@@ -249,7 +250,7 @@ export default function QuotationPreview({
                   </span>
                 </div>
 
-                <div className="text-red-600 font-medium text-sm mt-2 border-t border-red-200 pt-2">
+                <div className="text-red-600 font-semibold sm:text-sm text-xs mt-2 border-t border-red-200 pt-2">
                   The above provided figure is an estimate cost only. For a more
                   accurate cost and possible promotional offers, please consult
                   directly with your dedicated Success Manager at G12.
@@ -259,26 +260,26 @@ export default function QuotationPreview({
 
             {data.pricing.disclaimer && (
               <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 text-sm text-yellow-800 mb-4">
-                <p className="font-medium">Important Note:</p>
+                <p className="font-semibold">Important Note:</p>
                 <p>{data.pricing.disclaimer}</p>
               </div>
             )}
 
             <div className="border p-4 rounded-md mb-6">
-              <h4 className="font-medium mb-2">Timeline:</h4>
+              <h4 className="font-semibold mb-2">Timeline:</h4>
               <div className="space-y-1 text-sm">
                 <p>
-                  <span className="font-medium">Initial Approval:</span> 3-5
+                  <span className="font-semibold">Initial Approval:</span> 3-5
                   working days
                 </p>
                 <p>
-                  <span className="font-medium">License Issuance:</span>{" "}
+                  <span className="font-semibold">License Issuance:</span>{" "}
                   {data.businessSetup.type === "Freezone" ? "7-10" : "10-15"}{" "}
                   working days
                 </p>
                 {Number.parseInt(data.businessSetup.visas) > 0 && (
                   <p>
-                    <span className="font-medium">Visa Processing:</span> 15-20
+                    <span className="font-semibold">Visa Processing:</span> 15-20
                     working days per visa
                   </p>
                 )}
@@ -286,7 +287,7 @@ export default function QuotationPreview({
             </div>
 
             <div className="border-t border-b py-4 my-4">
-              <h4 className="font-medium mb-2">Terms & Conditions:</h4>
+              <h4 className="font-semibold mb-2">Terms & Conditions:</h4>
               <ul className="list-disc list-inside space-y-1 text-xs text-gray-600">
                 <li>
                   This quotation is valid for 30 days from the date of issue.
@@ -313,15 +314,13 @@ export default function QuotationPreview({
             </div>
 
             <div className="mt-6">
-              <h4 className="font-medium mb-2 text-[#d6a456] text-center">
+              <h4 className="font-semibold mb-2 text-[#d6a456] text-center">
                 G12 Business Services
               </h4>
               <div className="text-sm text-center">
-                <p>
+                <p className="sm:w-[33%] m-auto">
                   Office 1906, Al Shafar Tower 1, Barsha Heights (Tecom), Dubai,
-                  UAE
-                </p>
-                <p>P.O. Box: 123456</p>
+                  UAE P.O. Box: 123456</p>
                 <div className="mt-2">
                   <Link
                     href="mailto:info@g12.ae"
@@ -358,6 +357,47 @@ export default function QuotationPreview({
           </div>
         </CardContent>
       </Card>
+      <div className="md:col-span-2 flex flex-col items-center gap-4 mt-6">
+            <h3 className="text-lg font-semibold text-center">
+              Here are the next steps to <span className="text-[#d6a456] text-2xl uppercase">#GenerateSuccess</span> in the UAE:
+            </h3>
+
+            <Button
+              className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
+              onClick={downloadPDF}
+              disabled={isGenerating}
+            >
+              {isGenerating ? "Generating PDF..." : "Download Quotation"}
+            </Button>
+            <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+             <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[100px] w-[100px]">
+             <Image
+                src="/sonia.png" // Updated to use Next.js Image component
+                alt="Sonia"
+                width={100} // Adjusted width for the image
+                height={100} // Adjusted height for the image
+                
+              />
+             </div>
+              <div className="text-center">
+                <h4 className="text-lg font-semibold text-gray-800">Sonia</h4>
+                <p className="text-sm text-gray-600">Your Success Manager</p>
+              </div>
+              <Button
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6 py-2 uppercase rounded-full shadow-lg"
+                onClick={() => {
+                  // Logic to forward the quotation to Sonia's WhatsApp with the quotation attached
+                  const message = encodeURIComponent(
+                    `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
+                  );
+                  const whatsappUrl = `https://wa.me/971525850087?text=${message}`; // Replace with Sonia's actual number
+                  window.open(whatsappUrl, "_blank");
+                }}
+              >
+                Speak to Your Success Manager
+              </Button>
+            </div>
+          </div>
     </div>
   );
 }
