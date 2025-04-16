@@ -19,7 +19,7 @@ export function Logo({ className = "", size = "medium", href }: LogoProps) {
 
   const logoContent = (
     <Image
-      src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/G12-Final-Logo-Update-01-n3t164mVWAhMt7G5l29RAElHc0LZsA.png"
+      src="Logo.png"
       alt="G12 Logo"
       width={width}
       height={height}

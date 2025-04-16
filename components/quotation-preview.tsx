@@ -1,52 +1,55 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { jsPDF } from "jspdf"
-import html2canvas from "html2canvas"
-import { formatCurrency } from "@/lib/utils"
-import { Logo } from "./logo"
-import Link from "next/link"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { jsPDF } from "jspdf";
+import html2canvas from "html2canvas";
+import { formatCurrency } from "@/lib/utils";
+import { Logo } from "./logo";
+import Link from "next/link";
 
 interface QuotationPreviewProps {
   data: {
     clientInfo: {
-      name: string
-      mobile: string
-      email: string
-      nationality: string
-    }
+      name: string;
+      mobile: string;
+      email: string;
+      nationality: string;
+    };
     businessSetup: {
-      type: string
-      emirates: string
-      businessActivities: string[]
-      officeSpace: string
-      shareholders: string
-      visas: string
-    }
+      type: string;
+      emirates: string;
+      businessActivities: string[];
+      officeSpace: string;
+      shareholders: string;
+      visas: string;
+    };
     pricing: {
-      basePrice: number
-      visaPrice: number
-      totalPrice: number
-      disclaimer?: string
-    }
-    date: string
-    quotationNumber: string
-  }
-  onBack: () => void
+      basePrice: number;
+      visaPrice: number;
+      totalPrice: number;
+      disclaimer?: string;
+    };
+    date: string;
+    quotationNumber: string;
+  };
+  onBack: () => void;
 }
 
-export default function QuotationPreview({ data, onBack }: QuotationPreviewProps) {
-  const [isGenerating, setIsGenerating] = useState(false)
+export default function QuotationPreview({
+  data,
+  onBack,
+}: QuotationPreviewProps) {
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const downloadPDF = async () => {
-    setIsGenerating(true)
-    const quotationElement = document.getElementById("quotation-preview")
+    setIsGenerating(true);
+    const quotationElement = document.getElementById("quotation-preview");
 
     if (!quotationElement) {
-      setIsGenerating(false)
-      return
+      setIsGenerating(false);
+      return;
     }
 
     try {
@@ -55,29 +58,29 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
         logging: false,
         useCORS: true,
         backgroundColor: "#ffffff",
-      })
+      });
 
-      const imgData = canvas.toDataURL("image/png")
+      const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
-      })
+      });
 
-      const imgWidth = 210
-      const imgHeight = (canvas.height * imgWidth) / canvas.width
+      const imgWidth = 210;
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight)
+      pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
 
       // Create a sanitized client name for the filename (remove special characters)
-      const clientName = data.clientInfo.name.replace(/[^a-zA-Z0-9]/g, "_")
-      pdf.save(`G12_Quotation_${clientName}_${data.quotationNumber}.pdf`)
+      const clientName = data.clientInfo.name.replace(/[^a-zA-Z0-9]/g, "_");
+      pdf.save(`G12_Quotation_${clientName}_${data.quotationNumber}.pdf`);
     } catch (error) {
-      console.error("Error generating PDF:", error)
+      console.error("Error generating PDF:", error);
     }
 
-    setIsGenerating(false)
-  }
+    setIsGenerating(false);
+  };
 
   return (
     <div className="md:col-span-2">
@@ -85,7 +88,11 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
         <Button onClick={onBack} variant="outline">
           Back to Form
         </Button>
-        <Button onClick={downloadPDF} disabled={isGenerating} className="bg-[#d6a456] hover:bg-[#ab8134] text-white">
+        <Button
+          onClick={downloadPDF}
+          disabled={isGenerating}
+          className="bg-[#d6a456] hover:bg-[#ab8134] text-white"
+        >
           {isGenerating ? "Generating PDF..." : "Download Quotation"}
         </Button>
       </div>
@@ -105,51 +112,66 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
         <CardContent className="p-4 md:p-6">
           <div className="grid md:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
             <div>
-              <h3 className="text-lg font-semibold text-[#131313] mb-3">Client Information</h3>
+              <h3 className="text-lg font-semibold text-[#131313] mb-3">
+                Client Information
+              </h3>
               <div className="space-y-2">
                 <p>
-                  <span className="font-medium">Name:</span> {data.clientInfo.name}
+                  <span className="font-medium">Name:</span>{" "}
+                  {data.clientInfo.name}
                 </p>
                 <p>
-                  <span className="font-medium">Mobile:</span> {data.clientInfo.mobile}
+                  <span className="font-medium">Mobile:</span>{" "}
+                  {data.clientInfo.mobile}
                 </p>
                 <p>
-                  <span className="font-medium">Email:</span> {data.clientInfo.email}
+                  <span className="font-medium">Email:</span>{" "}
+                  {data.clientInfo.email}
                 </p>
                 <p>
-                  <span className="font-medium">Nationality:</span> {data.clientInfo.nationality}
+                  <span className="font-medium">Nationality:</span>{" "}
+                  {data.clientInfo.nationality}
                 </p>
               </div>
             </div>
 
             <div>
-              <h3 className="text-lg font-semibold text-[#131313] mb-3">Business Setup Details</h3>
+              <h3 className="text-lg font-semibold text-[#131313] mb-3">
+                Business Setup Details
+              </h3>
               <div className="space-y-2">
                 <p>
-                  <span className="font-medium">Type:</span> {data.businessSetup.type}
+                  <span className="font-medium">Type:</span>{" "}
+                  {data.businessSetup.type}
                 </p>
                 <p>
-                  <span className="font-medium">Emirates:</span> {data.businessSetup.emirates}
+                  <span className="font-medium">Emirates:</span>{" "}
+                  {data.businessSetup.emirates}
                 </p>
                 <p>
                   <span className="font-medium">Business Activities:</span>{" "}
                   {data.businessSetup.businessActivities.join(", ")}
                 </p>
                 <p>
-                  <span className="font-medium">Office Space Required:</span> {data.businessSetup.officeSpace}
+                  <span className="font-medium">Office Space Required:</span>{" "}
+                  {data.businessSetup.officeSpace}
                 </p>
                 <p>
-                  <span className="font-medium">Number of Shareholders:</span> {data.businessSetup.shareholders}
+                  <span className="font-medium">Number of Shareholders:</span>{" "}
+                  {data.businessSetup.shareholders}
                 </p>
                 <p>
-                  <span className="font-medium">Number of Visas:</span> {data.businessSetup.visas}
+                  <span className="font-medium">Number of Visas:</span>{" "}
+                  {data.businessSetup.visas}
                 </p>
               </div>
             </div>
           </div>
 
           <div className="border-t pt-6">
-            <h3 className="text-lg font-semibold text-[#131313] mb-4">Quotation Details</h3>
+            <h3 className="text-lg font-semibold text-[#131313] mb-4">
+              Quotation Details
+            </h3>
 
             <div className="mb-6">
               <h4 className="font-medium mb-2">Services Included:</h4>
@@ -168,7 +190,9 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
                           <li>Immigration Card</li>
                           <li>
                             Visa Processing for {data.businessSetup.visas}{" "}
-                            {Number.parseInt(data.businessSetup.visas) === 1 ? "person" : "people"}
+                            {Number.parseInt(data.businessSetup.visas) === 1
+                              ? "person"
+                              : "people"}
                           </li>
                           <li>Medical Testing Assistance</li>
                           <li>Emirates ID Processing</li>
@@ -204,7 +228,9 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
 
                 {Number.parseInt(data.businessSetup.visas) > 0 && (
                   <div className="flex justify-between flex-wrap">
-                    <span>Visa Cost ({data.businessSetup.visas} × AED 6,500):</span>
+                    <span>
+                      Visa Cost ({data.businessSetup.visas} × AED 6,500):
+                    </span>
                     <span>{formatCurrency(data.pricing.visaPrice)}</span>
                   </div>
                 )}
@@ -218,12 +244,15 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
 
                 <div className="flex justify-between font-bold text-lg border-t border-gray-300 pt-2 mt-2">
                   <span>Total Cost:</span>
-                  <span className="text-[#d6a456]">{formatCurrency(data.pricing.totalPrice)}</span>
+                  <span className="text-[#d6a456]">
+                    {formatCurrency(data.pricing.totalPrice)}
+                  </span>
                 </div>
 
                 <div className="text-red-600 font-medium text-sm mt-2 border-t border-red-200 pt-2">
-                  The above provided figure is an estimate cost only. For a more accurate cost and possible promotional
-                  offers, please consult directly with your dedicated Success Manager at G12.
+                  The above provided figure is an estimate cost only. For a more
+                  accurate cost and possible promotional offers, please consult
+                  directly with your dedicated Success Manager at G12.
                 </div>
               </div>
             </div>
@@ -239,15 +268,18 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
               <h4 className="font-medium mb-2">Timeline:</h4>
               <div className="space-y-1 text-sm">
                 <p>
-                  <span className="font-medium">Initial Approval:</span> 3-5 working days
+                  <span className="font-medium">Initial Approval:</span> 3-5
+                  working days
                 </p>
                 <p>
                   <span className="font-medium">License Issuance:</span>{" "}
-                  {data.businessSetup.type === "Freezone" ? "7-10" : "10-15"} working days
+                  {data.businessSetup.type === "Freezone" ? "7-10" : "10-15"}{" "}
+                  working days
                 </p>
                 {Number.parseInt(data.businessSetup.visas) > 0 && (
                   <p>
-                    <span className="font-medium">Visa Processing:</span> 15-20 working days per visa
+                    <span className="font-medium">Visa Processing:</span> 15-20
+                    working days per visa
                   </p>
                 )}
               </div>
@@ -256,33 +288,60 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
             <div className="border-t border-b py-4 my-4">
               <h4 className="font-medium mb-2">Terms & Conditions:</h4>
               <ul className="list-disc list-inside space-y-1 text-xs text-gray-600">
-                <li>This quotation is valid for 30 days from the date of issue.</li>
-                <li>50% advance payment is required to initiate the process.</li>
-                <li>Government fees are subject to change without prior notice.</li>
-                <li>Additional charges may apply for premium locations or special approvals.</li>
-                <li>Processing times are estimates and may vary based on government procedures.</li>
                 <li>
-                  Cancellation policy: 25% of the paid amount is non-refundable if the process is cancelled after
-                  initiation.
+                  This quotation is valid for 30 days from the date of issue.
+                </li>
+                <li>
+                  50% advance payment is required to initiate the process.
+                </li>
+                <li>
+                  Government fees are subject to change without prior notice.
+                </li>
+                <li>
+                  Additional charges may apply for premium locations or special
+                  approvals.
+                </li>
+                <li>
+                  Processing times are estimates and may vary based on
+                  government procedures.
+                </li>
+                <li>
+                  Cancellation policy: 25% of the paid amount is non-refundable
+                  if the process is cancelled after initiation.
                 </li>
               </ul>
             </div>
 
             <div className="mt-6">
-              <h4 className="font-medium mb-2 text-[#d6a456] text-center">G12 Business Services</h4>
+              <h4 className="font-medium mb-2 text-[#d6a456] text-center">
+                G12 Business Services
+              </h4>
               <div className="text-sm text-center">
-                <p>Office 1906, Al Shafar Tower 1, Barsha Heights (Tecom), Dubai, UAE</p>
+                <p>
+                  Office 1906, Al Shafar Tower 1, Barsha Heights (Tecom), Dubai,
+                  UAE
+                </p>
                 <p>P.O. Box: 123456</p>
                 <div className="mt-2">
-                  <Link href="mailto:info@g12.ae" className="text-[#d6a456] hover:underline mx-2">
+                  <Link
+                    href="mailto:info@g12.ae"
+                    className="text-[#d6a456] hover:underline mx-2"
+                  >
                     info@g12.ae
                   </Link>
                   |
-                  <Link href="tel:+97141234567" className="text-[#d6a456] hover:underline mx-2">
-                    +971 4 123 4567
+                  <Link
+                    href="tel:+97145706451"
+                    className="text-[#d6a456] hover:underline mx-2"
+                  >
+                    +971 4 570 6451
                   </Link>
                   |
-                  <Link href="https://www.g12.ae" target="_blank" className="text-[#d6a456] hover:underline mx-2">
+                  <Link
+                    href="https://www.g12.ae"
+                    target="_blank"
+                    className="text-[#d6a456] hover:underline mx-2"
+                  >
                     www.g12.ae
                   </Link>
                 </div>
@@ -291,12 +350,14 @@ export default function QuotationPreview({ data, onBack }: QuotationPreviewProps
 
             <div className="mt-8 text-center">
               <div className="inline-block border-t-2 border-[#d6a456] pt-2">
-                <p className="text-sm text-[#131313]">Thank you for choosing G12 for your business setup needs.</p>
+                <p className="text-sm text-[#131313]">
+                  Thank you for choosing G12 for your business setup needs.
+                </p>
               </div>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

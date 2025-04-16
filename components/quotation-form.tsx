@@ -1,53 +1,112 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
-import { nationalities } from "@/lib/nationalities"
-import { countryCodes } from "@/lib/country-codes"
-import { generateQuotation } from "@/lib/generate-quotation"
-import QuotationPreview from "./quotation-preview"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Check, ChevronsUpDown } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { nationalities } from "@/lib/nationalities";
+import { countryCodes } from "@/lib/country-codes";
+import { generateQuotation } from "@/lib/generate-quotation";
+import QuotationPreview from "./quotation-preview";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Image from 'next/image';
 
 const formSchema = z.object({
-  firstName: z.string().min(2, { message: "First name must be at least 2 characters." }),
-  lastName: z.string().min(2, { message: "Last name must be at least 2 characters." }),
+  firstName: z
+    .string()
+    .min(2, { message: "First name must be at least 2 characters." }),
+  lastName: z
+    .string()
+    .min(2, { message: "Last name must be at least 2 characters." }),
   countryCode: z.string().min(1, { message: "Please select a country code." }),
   mobile: z.string().min(8, { message: "Please enter a valid mobile number." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
-  nationality: z.string().min(1, { message: "Please select your nationality." }),
+  nationality: z
+    .string()
+    .min(1, { message: "Please select your nationality." }),
   type: z.enum(["Freezone", "Mainland"]),
-  emirate: z.enum(["Dubai", "Abu Dhabi", "Ajman", "Sharjah", "RAK", "Fujairah", "Umm Al Quwain"]),
+  emirate: z.enum([
+    "Dubai",
+    "Abu Dhabi",
+    "Ajman",
+    "Sharjah",
+    "RAK",
+    "Fujairah",
+    "Umm Al Quwain",
+  ]),
   businessActivities: z
     .array(z.enum(["Trading", "Manufacturing", "Services or Consultancy"]))
-    .refine((activities) => activities.length > 0, { message: "Please select at least one business activity." }),
+    .refine((activities) => activities.length > 0, {
+      message: "Please select at least one business activity.",
+    }),
   officeSpace: z.enum(["Yes", "No", "Not decided yet"]),
   shareholders: z.enum(["1", "2", "3", "4", "5", "6"]),
-  visas: z.enum(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"]),
-})
+  visas: z.enum([
+    "0",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+  ]),
+});
 
-type FormValues = z.infer<typeof formSchema>
+type FormValues = z.infer<typeof formSchema>;
 
 const businessActivities = [
   { id: "Trading", label: "Trading" },
   { id: "Manufacturing", label: "Manufacturing" },
   { id: "Services or Consultancy", label: "Services or Consultancy" },
-]
+];
 
 export default function QuotationForm() {
-  const [quotationData, setQuotationData] = useState<any>(null)
-  const [showQuotation, setShowQuotation] = useState(false)
-  const [open, setOpen] = useState(false)
+  const [quotationData, setQuotationData] = useState<any>(null);
+  const [showQuotation, setShowQuotation] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -65,9 +124,9 @@ export default function QuotationForm() {
       shareholders: "1",
       visas: "0",
     },
-  })
+  });
 
-  const type = form.watch("type")
+  const type = form.watch("type");
 
   function onSubmit(data: FormValues) {
     // Combine first and last name for the quotation
@@ -76,16 +135,16 @@ export default function QuotationForm() {
       name: `${data.firstName} ${data.lastName}`,
       mobile: `${data.countryCode} ${data.mobile}`,
       emirates: data.emirate, // Map to the old field name for compatibility
-    }
+    };
 
-    const quotation = generateQuotation(fullData)
-    setQuotationData(quotation)
-    setShowQuotation(true)
+    const quotation = generateQuotation(fullData);
+    setQuotationData(quotation);
+    setShowQuotation(true);
   }
 
   const handleBackToForm = () => {
-    setShowQuotation(false)
-  }
+    setShowQuotation(false);
+  };
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
@@ -93,10 +152,15 @@ export default function QuotationForm() {
         <Card className="md:col-span-2">
           <CardContent className="pt-6">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-[#d6a456]">Your Information</h2>
+                    <h2 className="text-xl font-semibold text-[#d6a456]">
+                      Your Information
+                    </h2>
 
                     {/* First Name - full width on mobile, half width on desktop */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -107,7 +171,10 @@ export default function QuotationForm() {
                           <FormItem>
                             <FormLabel>First Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter your first name" {...field} />
+                              <Input
+                                placeholder="Enter your first name"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -121,7 +188,10 @@ export default function QuotationForm() {
                           <FormItem>
                             <FormLabel>Last Name</FormLabel>
                             <FormControl>
-                              <Input placeholder="Enter your last name" {...field} />
+                              <Input
+                                placeholder="Enter your last name"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -137,7 +207,10 @@ export default function QuotationForm() {
                         render={({ field }) => (
                           <FormItem className="w-full">
                             <FormLabel>Country Code</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Code" />
@@ -201,7 +274,10 @@ export default function QuotationForm() {
                                   className="w-full justify-between"
                                 >
                                   {field.value
-                                    ? nationalities.find((nationality) => nationality === field.value)
+                                    ? nationalities.find(
+                                        (nationality) =>
+                                          nationality === field.value
+                                      )
                                     : "Select nationality"}
                                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                 </Button>
@@ -211,21 +287,28 @@ export default function QuotationForm() {
                               <Command>
                                 <CommandInput placeholder="Search nationality..." />
                                 <CommandList>
-                                  <CommandEmpty>No nationality found.</CommandEmpty>
+                                  <CommandEmpty>
+                                    No nationality found.
+                                  </CommandEmpty>
                                   <CommandGroup className="max-h-[200px] overflow-auto">
                                     {nationalities.map((nationality) => (
                                       <CommandItem
                                         key={nationality}
                                         value={nationality}
                                         onSelect={() => {
-                                          form.setValue("nationality", nationality)
-                                          setOpen(false)
+                                          form.setValue(
+                                            "nationality",
+                                            nationality
+                                          );
+                                          setOpen(false);
                                         }}
                                       >
                                         <Check
                                           className={cn(
                                             "mr-2 h-4 w-4",
-                                            field.value === nationality ? "opacity-100" : "opacity-0",
+                                            field.value === nationality
+                                              ? "opacity-100"
+                                              : "opacity-0"
                                           )}
                                         />
                                         {nationality}
@@ -243,7 +326,9 @@ export default function QuotationForm() {
                   </div>
 
                   <div className="space-y-6">
-                    <h2 className="text-xl font-semibold text-[#d6a456]">Business Setup Details</h2>
+                    <h2 className="text-xl font-semibold text-[#d6a456]">
+                      Business Setup Details
+                    </h2>
 
                     <FormField
                       control={form.control}
@@ -251,7 +336,10 @@ export default function QuotationForm() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Type</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select type" />
@@ -273,7 +361,10 @@ export default function QuotationForm() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Emirate</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select emirate" />
@@ -281,12 +372,18 @@ export default function QuotationForm() {
                             </FormControl>
                             <SelectContent>
                               <SelectItem value="Dubai">Dubai</SelectItem>
-                              <SelectItem value="Abu Dhabi">Abu Dhabi</SelectItem>
+                              <SelectItem value="Abu Dhabi">
+                                Abu Dhabi
+                              </SelectItem>
                               <SelectItem value="Sharjah">Sharjah</SelectItem>
                               <SelectItem value="Ajman">Ajman</SelectItem>
-                              <SelectItem value="RAK">Ras Al Khaimah</SelectItem>
+                              <SelectItem value="RAK">
+                                Ras Al Khaimah
+                              </SelectItem>
                               <SelectItem value="Fujairah">Fujairah</SelectItem>
-                              <SelectItem value="Umm Al Quwain">Umm Al Quwain</SelectItem>
+                              <SelectItem value="Umm Al Quwain">
+                                Umm Al Quwain
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -300,7 +397,9 @@ export default function QuotationForm() {
                       render={() => (
                         <FormItem>
                           <div className="mb-4">
-                            <FormLabel className="text-base">Business Activities</FormLabel>
+                            <FormLabel className="text-base">
+                              Business Activities
+                            </FormLabel>
                             <FormDescription>
                               {type === "Freezone"
                                 ? "You can select multiple activities for Freezone"
@@ -314,34 +413,51 @@ export default function QuotationForm() {
                               name="businessActivities"
                               render={({ field }) => {
                                 return (
-                                  <FormItem key={activity.id} className="flex flex-row items-start space-x-3 space-y-0">
+                                  <FormItem
+                                    key={activity.id}
+                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                  >
                                     <FormControl>
                                       <Checkbox
-                                        checked={field.value?.includes(activity.id as any)}
+                                        checked={field.value?.includes(
+                                          activity.id as any
+                                        )}
                                         onCheckedChange={(checked) => {
-                                          const currentActivities = [...field.value]
+                                          const currentActivities = [
+                                            ...field.value,
+                                          ];
 
                                           if (type === "Mainland") {
                                             // For Mainland, only allow one selection
                                             if (checked) {
-                                              field.onChange([activity.id])
+                                              field.onChange([activity.id]);
                                             } else {
-                                              field.onChange([])
+                                              field.onChange([]);
                                             }
                                           } else {
                                             // For Freezone, allow multiple selections
                                             if (checked) {
-                                              field.onChange([...currentActivities, activity.id])
+                                              field.onChange([
+                                                ...currentActivities,
+                                                activity.id,
+                                              ]);
                                             } else {
-                                              field.onChange(currentActivities.filter((value) => value !== activity.id))
+                                              field.onChange(
+                                                currentActivities.filter(
+                                                  (value) =>
+                                                    value !== activity.id
+                                                )
+                                              );
                                             }
                                           }
                                         }}
                                       />
                                     </FormControl>
-                                    <FormLabel className="font-normal">{activity.label}</FormLabel>
+                                    <FormLabel className="font-normal">
+                                      {activity.label}
+                                    </FormLabel>
                                   </FormItem>
-                                )
+                                );
                               }}
                             />
                           ))}
@@ -356,7 +472,10 @@ export default function QuotationForm() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Office Space Requirement</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
                             <FormControl>
                               <SelectTrigger>
                                 <SelectValue placeholder="Select option" />
@@ -365,7 +484,9 @@ export default function QuotationForm() {
                             <SelectContent>
                               <SelectItem value="Yes">Yes</SelectItem>
                               <SelectItem value="No">No</SelectItem>
-                              <SelectItem value="Not decided yet">Not decided yet</SelectItem>
+                              <SelectItem value="Not decided yet">
+                                Not decided yet
+                              </SelectItem>
                             </SelectContent>
                           </Select>
                           <FormMessage />
@@ -381,7 +502,10 @@ export default function QuotationForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Number of Shareholders</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select number" />
@@ -406,14 +530,19 @@ export default function QuotationForm() {
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Number of Visas</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
                               <FormControl>
                                 <SelectTrigger>
                                   <SelectValue placeholder="Select number" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                {Array.from({ length: 16 }, (_, i) => i.toString()).map((num) => (
+                                {Array.from({ length: 16 }, (_, i) =>
+                                  i.toString()
+                                ).map((num) => (
                                   <SelectItem key={num} value={num}>
                                     {num}
                                   </SelectItem>
@@ -429,7 +558,10 @@ export default function QuotationForm() {
                 </div>
 
                 <div className="flex justify-center pt-4">
-                  <Button type="submit" className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase">
+                  <Button
+                    type="submit"
+                    className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
+                  >
                     Generate Instant Quotation
                   </Button>
                 </div>
@@ -438,8 +570,64 @@ export default function QuotationForm() {
           </CardContent>
         </Card>
       ) : (
-        <QuotationPreview data={quotationData} onBack={handleBackToForm} />
+        <>
+          <QuotationPreview data={quotationData} onBack={handleBackToForm} />
+          <div className="md:col-span-2 flex flex-col items-center gap-4 mt-6">
+            <h3 className="text-lg font-semibold text-center">
+              Here are the next steps to <span className="text-[#d6a456] text-2xl uppercase">#GenerateSuccess</span> in the UAE:
+            </h3>
+
+            <Button
+              className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
+              onClick={() => {
+                // Logic to download the quotation
+                const element = document.createElement("a");
+                const file = new Blob(
+                  [JSON.stringify(quotationData, null, 2)],
+                  {
+                    type: "application/json",
+                  }
+                );
+                element.href = URL.createObjectURL(file);
+                element.download = "quotation.json";
+                document.body.appendChild(element);
+                element.click();
+              }}
+            >
+              Download Quotation
+            </Button>
+
+            <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+             <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[100px] w-[100px]">
+             <Image
+                src="/sonia.png" // Updated to use Next.js Image component
+                alt="Sonia"
+                width={100} // Adjusted width for the image
+                height={100} // Adjusted height for the image
+                
+              />
+             </div>
+              <div className="text-center">
+                <h4 className="text-lg font-semibold text-gray-800">Sonia</h4>
+                <p className="text-sm text-gray-600">Your Success Manager</p>
+              </div>
+              <Button
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6 py-2 uppercase rounded-full shadow-lg"
+                onClick={() => {
+                  // Logic to forward the quotation to Sonia's WhatsApp with the quotation attached
+                  const message = encodeURIComponent(
+                    `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
+                  );
+                  const whatsappUrl = `https://wa.me/923132272696?text=${message}`; // Replace with Sonia's actual number
+                  window.open(whatsappUrl, "_blank");
+                }}
+              >
+                Speak to Your Success Manager
+              </Button>
+            </div>
+          </div>
+        </>
       )}
     </div>
-  )
+  );
 }
