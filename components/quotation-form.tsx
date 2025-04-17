@@ -43,7 +43,7 @@ import {
 } from "@/components/ui/popover";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Image from 'next/image';
+import Image from "next/image";
 
 const formSchema = z.object({
   firstName: z
@@ -148,6 +148,13 @@ export default function QuotationForm() {
 
   return (
     <div className="grid md:grid-cols-2 gap-8">
+      <div className="mb-8 text-center col-span-2">
+        <p className="text-[#6c757d] max-w-2xl mx-auto" id="description">
+          Please fill in the details for your desired company structure below to
+          generate an instant, AI-generated business setup quotation for your
+          specific requirements.
+        </p>
+      </div>
       {!showQuotation ? (
         <Card className="md:col-span-2">
           <CardContent className="pt-6">
@@ -572,7 +579,6 @@ export default function QuotationForm() {
       ) : (
         <>
           <QuotationPreview data={quotationData} onBack={handleBackToForm} />
-        
         </>
       )}
     </div>

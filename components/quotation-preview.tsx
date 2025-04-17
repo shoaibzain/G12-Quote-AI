@@ -135,6 +135,7 @@ export default function QuotationPreview({
 
   return (
     <div className="md:col-span-2">
+      
       {/* Success Section - Moved to top */}
       <div className="md:col-span-2 flex flex-col gap-4 mb-6">
         <h3 className="text-lg font-semibold text-center">
@@ -143,11 +144,11 @@ export default function QuotationPreview({
         </h3>
 
         <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <div className="flex justify-between items-center gap-4">
+          <div className="flex justify-between items-center gap-2 sm:gap-4">
             <Button onClick={onBack} variant="outline">
               Back to Form
             </Button>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 md:gap-3">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-8 w-8 text-[#d6a456]"
@@ -163,7 +164,7 @@ export default function QuotationPreview({
                 />
               </svg>
               <Button
-                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6"
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-3 sm:px-6"
                 onClick={downloadPDF}
                 disabled={isGenerating}
               >
@@ -190,7 +191,7 @@ export default function QuotationPreview({
                 <p className="text-sm text-gray-600">Your Success Manager</p>
               </div>
               <Button
-                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-4 py-2 rounded-full shadow-lg"
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-2 sm:px-4 py-2 rounded-full shadow-lg"
                 onClick={() => {
                   const message = encodeURIComponent(
                     `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
@@ -199,7 +200,7 @@ export default function QuotationPreview({
                   window.open(whatsappUrl, "_blank");
                 }}
               >
-                Speak to Your Success Manager
+                Speak to me NOW
               </Button>
             </div>
           </div>
@@ -220,9 +221,9 @@ export default function QuotationPreview({
       </div> */}
 
       <Card className="overflow-hidden" id="quotation-preview">
-        <div className="bg-[#d6a456] sm:p-6 p-4 text-white">
+        <div className="bg-[#000] sm:p-6 p-4 text-white">
           <div className="flex justify-between items-center">
-            <Logo size="small" href="https://g12.ae" />
+            <Logo size="small" href="https://g12.ae"  customLogoUrl="Logo.png" />
             <div className="text-right">
               <h3 className="text-xl font-semibold">QUOTATION</h3>
               <p className="text-sm">#{data.quotationNumber}</p>
@@ -487,6 +488,75 @@ export default function QuotationPreview({
           </div>
         </CardContent>
       </Card>
+      <div className="md:col-span-2 flex flex-col gap-4 mb-6 mt-6">
+        <h3 className="text-lg font-semibold text-center">
+          Here are the next steps to{" "}
+          <span className="text-[#d6a456]">#GENERATE SUCCESS</span> in the UAE:
+        </h3>
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+          <div className="flex justify-between items-center gap-2 sm:gap-4">
+            <Button onClick={onBack} variant="outline">
+              Back to Form
+            </Button>
+            <div className="flex items-center gap-1 md:gap-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-[#d6a456]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <Button
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-3 sm:px-6"
+                onClick={downloadPDF}
+                disabled={isGenerating}
+              >
+                {isGenerating ? "Generating PDF..." : "Download Quotation"}
+              </Button>
+            </div>
+          </div>
+          <div className="hidden md:block text-gray-600 font-medium">OR</div>
+
+          <div className="flex items-center gap-4">
+            <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[80px] w-[80px]">
+              <Image
+                src="/sonia.png"
+                alt="Sonia Shareef"
+                width={80}
+                height={80}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <div>
+                <h4 className="text-lg font-semibold text-gray-800">
+                  Sonia Shareef
+                </h4>
+                <p className="text-sm text-gray-600">Your Success Manager</p>
+              </div>
+              <Button
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-2 sm:px-4 py-2 rounded-full shadow-lg"
+                onClick={() => {
+                  const message = encodeURIComponent(
+                    `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
+                  );
+                  const whatsappUrl = `https://wa.me/971525850087?text=${message}`;
+                  window.open(whatsappUrl, "_blank");
+                }}
+              >
+                Speak to me NOW
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

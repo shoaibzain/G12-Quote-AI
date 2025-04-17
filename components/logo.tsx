@@ -5,9 +5,10 @@ interface LogoProps {
   className?: string
   size?: "small" | "medium" | "large"
   href?: string
+  customLogoUrl?: string
 }
 
-export function Logo({ className = "", size = "medium", href }: LogoProps) {
+export function Logo({ className = "", size = "medium", href, customLogoUrl }: LogoProps) {
   // Define sizes for different variants
   const sizes = {
     small: { width: 120, height: 36 },
@@ -19,7 +20,7 @@ export function Logo({ className = "", size = "medium", href }: LogoProps) {
 
   const logoContent = (
     <Image
-      src="G12-AI-05.png"
+      src={customLogoUrl || "G12-AI-05.png"}
       alt="G12 Logo"
       width={width}
       height={height}
