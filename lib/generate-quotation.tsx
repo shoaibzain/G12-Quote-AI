@@ -13,6 +13,11 @@ export function generateQuotation(formData: any) {
     } else if (formData.officeSpace === "No") {
       disclaimer = "You might need a virtual rental contract. The price shown is a starting price."
     }
+
+    // Calculate visa costs for Mainland
+    if (Number.parseInt(formData.visas) > 0) {
+      visaPrice = Number.parseInt(formData.visas) * 6500
+    }
   }
   // Freezone pricing
   else if (formData.type === "Freezone") {
@@ -25,7 +30,7 @@ export function generateQuotation(formData: any) {
       basePrice = 6000
     }
 
-    // Calculate visa costs if any
+    // Calculate visa costs for Freezone
     if (Number.parseInt(formData.visas) > 0) {
       visaPrice = Number.parseInt(formData.visas) * 6500
     }

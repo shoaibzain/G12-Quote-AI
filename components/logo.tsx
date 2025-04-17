@@ -19,7 +19,7 @@ export function Logo({ className = "", size = "medium", href }: LogoProps) {
 
   const logoContent = (
     <Image
-      src="Logo.png"
+      src="G12-AI-05.png"
       alt="G12 Logo"
       width={width}
       height={height}

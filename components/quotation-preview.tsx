@@ -69,41 +69,59 @@ export default function QuotationPreview({
             element.style.margin = "0";
             element.style.width = "1200px";
           }
-        }
+        },
       });
 
       const pdf = new jsPDF({
         orientation: "portrait",
         unit: "mm",
         format: "a4",
-        compress: true
+        compress: true,
       });
 
       const pageWidth = pdf.internal.pageSize.getWidth();
-      
+
       if (isMobile) {
         // Create a single optimized page for mobile
         const imgWidth = pageWidth;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        
+
         // Add image with high quality settings
-        const imgData = canvas.toDataURL('image/jpeg', 1.0);
-        pdf.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+        const imgData = canvas.toDataURL("image/jpeg", 1.0);
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          0,
+          0,
+          imgWidth,
+          imgHeight,
+          undefined,
+          "FAST"
+        );
       } else {
         // Desktop version - single page
         const imgData = canvas.toDataURL("image/jpeg", 1.0);
         const imgWidth = pageWidth;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
-        pdf.addImage(imgData, "JPEG", 0, 0, imgWidth, imgHeight, undefined, 'FAST');
+        pdf.addImage(
+          imgData,
+          "JPEG",
+          0,
+          0,
+          imgWidth,
+          imgHeight,
+          undefined,
+          "FAST"
+        );
       }
 
       // Add metadata
       pdf.setProperties({
         title: `G12 Business Setup Quotation - ${data.clientInfo.name}`,
-        subject: 'Business Setup Quotation',
-        author: 'G12 Business Services',
-        keywords: 'business setup, UAE, quotation',
-        creator: 'G12 Quote Generator'
+        subject: "Business Setup Quotation",
+        author: "G12 Business Services",
+        keywords: "business setup, UAE, quotation",
+        creator: "G12 Quote Generator",
       });
 
       const clientName = data.clientInfo.name.replace(/[^a-zA-Z0-9]/g, "_");
@@ -117,7 +135,78 @@ export default function QuotationPreview({
 
   return (
     <div className="md:col-span-2">
-      <div className="flex justify-between items-center mb-4">
+      {/* Success Section - Moved to top */}
+      <div className="md:col-span-2 flex flex-col gap-4 mb-6">
+        <h3 className="text-lg font-semibold text-center">
+          Here are the next steps to{" "}
+          <span className="text-[#d6a456]">#GENERATE SUCCESS</span> in the UAE:
+        </h3>
+
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
+          <div className="flex justify-between items-center gap-4">
+            <Button onClick={onBack} variant="outline">
+              Back to Form
+            </Button>
+            <div className="flex items-center gap-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-8 w-8 text-[#d6a456]"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                />
+              </svg>
+              <Button
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6"
+                onClick={downloadPDF}
+                disabled={isGenerating}
+              >
+                {isGenerating ? "Generating PDF..." : "Download Quotation"}
+              </Button>
+            </div>
+          </div>
+          <div className="hidden md:block text-gray-600 font-medium">OR</div>
+
+          <div className="flex items-center gap-4">
+            <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[80px] w-[80px]">
+              <Image
+                src="/sonia.png"
+                alt="Sonia Shareef"
+                width={80}
+                height={80}
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <div>
+                <h4 className="text-lg font-semibold text-gray-800">
+                  Sonia Shareef
+                </h4>
+                <p className="text-sm text-gray-600">Your Success Manager</p>
+              </div>
+              <Button
+                className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-4 py-2 rounded-full shadow-lg"
+                onClick={() => {
+                  const message = encodeURIComponent(
+                    `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
+                  );
+                  const whatsappUrl = `https://wa.me/971525850087?text=${message}`;
+                  window.open(whatsappUrl, "_blank");
+                }}
+              >
+                Speak to Your Success Manager
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* <div className="flex justify-between items-center mb-4">
         <Button onClick={onBack} variant="outline">
           Back to Form
         </Button>
@@ -128,10 +217,10 @@ export default function QuotationPreview({
         >
           {isGenerating ? "Generating PDF..." : "Download Quotation"}
         </Button>
-      </div>
+      </div> */}
 
       <Card className="overflow-hidden" id="quotation-preview">
-        <div className="bg-[#131313] sm:p-6 p-4 text-white">
+        <div className="bg-[#d6a456] sm:p-6 p-4 text-white">
           <div className="flex justify-between items-center">
             <Logo size="small" href="https://g12.ae" />
             <div className="text-right">
@@ -327,7 +416,9 @@ export default function QuotationPreview({
               <h4 className="font-semibold mb-2">Terms & Conditions:</h4>
               <ul className="list-disc list-inside space-y-1 text-xs text-gray-600">
                 <li>
-                  This quotation is valid for 30 days from the date of issue.
+                  This is an AI-generated quotation, which serves to provide you
+                  with pricing estimates. For an exact customised quotation,
+                  please contact your dedicated Success Manager at G12.
                 </li>
                 <li>
                   50% advance payment is required to initiate the process.
@@ -352,13 +443,13 @@ export default function QuotationPreview({
 
             {/* Footer Section */}
             <div className="mt-6">
-              <h4 className="font-semibold mb-2 text-[#d6a456] text-center">
-                G12 Business Services
-              </h4>
+              <div className="flex justify-center al mb-2">
+                <Logo size="small" href="https://g12.ae" />
+              </div>
               <div className="text-sm text-center">
-                <p className="sm:w-[33%] m-auto">
+                <p>
                   Office 1906, Al Shafar Tower 1, Barsha Heights (Tecom), Dubai,
-                  UAE P.O. Box: 123456
+                  UAE
                 </p>
                 <div className="mt-2">
                   <Link
@@ -396,52 +487,6 @@ export default function QuotationPreview({
           </div>
         </CardContent>
       </Card>
-
-      {/* Success Section */}
-      <div className="md:col-span-2 flex flex-col items-center gap-4 mt-6">
-        <h3 className="text-lg font-semibold text-center">
-          Here are the next steps to{" "}
-          <span className="text-[#d6a456] text-2xl uppercase">
-            #GenerateSuccess
-          </span>{" "}
-          in the UAE:
-        </h3>
-
-        <Button
-          className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
-          onClick={downloadPDF}
-          disabled={isGenerating}
-        >
-          {isGenerating ? "Generating PDF..." : "Download Quotation"}
-        </Button>
-        <div className="flex flex-col items-center gap-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <div className="rounded-full border-2 border-[#d6a456] overflow-hidden h-[100px] w-[100px]">
-            <Image
-              src="/sonia.png" // Updated to use Next.js Image component
-              alt="Sonia"
-              width={100} // Adjusted width for the image
-              height={100} // Adjusted height for the image
-            />
-          </div>
-          <div className="text-center">
-            <h4 className="text-lg font-semibold text-gray-800">Sonia</h4>
-            <p className="text-sm text-gray-600">Your Success Manager</p>
-          </div>
-          <Button
-            className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-6 py-2 uppercase rounded-full shadow-lg"
-            onClick={() => {
-              // Logic to forward the quotation to Sonia's WhatsApp with the quotation attached
-              const message = encodeURIComponent(
-                `Hello Sonia, I would like to discuss my AI-generated business setup quotation further.`
-              );
-              const whatsappUrl = `https://wa.me/971525850087?text=${message}`; // Replace with Sonia's actual number
-              window.open(whatsappUrl, "_blank");
-            }}
-          >
-            Speak to Your Success Manager
-          </Button>
-        </div>
-      </div>
     </div>
   );
 }
