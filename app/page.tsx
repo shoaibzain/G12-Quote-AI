@@ -16,6 +16,7 @@ export default function Home() {
             <Logo size="large" href="https://g12.ae" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-[#131313] mb-2">AI-Powered Business Setup Quotation</h1>
+              
         </div>
         <QuotationForm />
       </div>
