@@ -27,6 +27,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { nationalities } from "@/lib/nationalities";
 import { countryCodes } from "@/lib/country-codes";
 import { generateQuotation } from "@/lib/generate-quotation";
+import { createZohoLead } from "@/lib/zoho-integration";
 import QuotationPreview from "./quotation-preview";
 import {
   Command,
@@ -44,6 +45,7 @@ import {
 import { Check, ChevronsUpDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import { toast } from "@/hooks/use-toast";
 
 const formSchema = z.object({
   firstName: z
@@ -107,6 +109,7 @@ export default function QuotationForm() {
   const [quotationData, setQuotationData] = useState<any>(null);
   const [showQuotation, setShowQuotation] = useState(false);
   const [open, setOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -128,18 +131,82 @@ export default function QuotationForm() {
 
   const type = form.watch("type");
 
-  function onSubmit(data: FormValues) {
-    // Combine first and last name for the quotation
-    const fullData = {
-      ...data,
-      name: `${data.firstName} ${data.lastName}`,
-      mobile: `${data.countryCode} ${data.mobile}`,
-      emirates: data.emirate, // Map to the old field name for compatibility
-    };
+  async function onSubmit(data: FormValues) {
+    try {
+      setIsSubmitting(true);
+      
+      // Combine first and last name for the quotation
+      const fullData = {
+        ...data,
+        name: `${data.firstName} ${data.lastName}`,
+        mobile: `${data.countryCode} ${data.mobile}`,
+        emirates: data.emirate, // Map to the old field name for compatibility
+      };
 
-    const quotation = generateQuotation(fullData);
-    setQuotationData(quotation);
-    setShowQuotation(true);
+      // Generate the quotation
+      const quotation = generateQuotation(fullData);
+      setQuotationData(quotation);
+      
+      // Create the lead in Zoho CRM
+      try {
+        console.log('Preparing to send lead to Zoho CRM...');
+        
+        const leadData = {
+          First_Name: data.firstName,
+          Last_Name: data.lastName,
+          Email: data.email,
+          Phone: `${data.countryCode}${data.mobile}`,
+          Description: `Business Setup Request - ${data.type} in ${data.emirate}
+Business Activities: ${data.businessActivities.join(", ")}
+Office Space: ${data.officeSpace}
+Shareholders: ${data.shareholders}
+Visas: ${data.visas}
+Nationality: ${data.nationality}
+Quotation Number: ${quotation.quotationNumber}`,
+          Lead_Source: "Website - AI Quotation",
+          Company: `${data.firstName} ${data.lastName} Business`, // Add Company field which is required in some Zoho environments
+          // Custom fields specific to business setup
+          Quotation_Type: data.type,
+          Emirate: data.emirate,
+          Visas_Required: data.visas,
+          Shareholders: data.shareholders
+        };
+        
+        // Send data to Zoho CRM
+        console.log('Sending data to Zoho CRM...');
+        const response = await createZohoLead(leadData);
+        
+        console.log('Lead created successfully in Zoho CRM:', response);
+        
+        // Display success toast
+        toast({
+          title: "Success",
+          description: "Your information has been sent to our team who will contact you shortly.",
+          variant: "default",
+        });
+      } catch (error) {
+        console.error('Error creating lead in Zoho CRM:', error);
+        // Don't stop the process if Zoho integration fails, but notify the user
+        toast({
+          title: "Note",
+          description: "We had trouble saving your information to our system, but your quotation is ready. Our team will contact you soon.",
+          variant: "default",
+        });
+      }
+      
+      // Show the quotation to the user
+      setShowQuotation(true);
+      
+    } catch (error) {
+      console.error('Error during form submission:', error);
+      toast({
+        title: "Error",
+        description: "There was a problem generating your quotation. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const handleBackToForm = () => {
@@ -580,9 +647,10 @@ export default function QuotationForm() {
                   <div className="flex justify-center pt-4">
                     <Button
                       type="submit"
+                      disabled={isSubmitting}
                       className="bg-[#d6a456] hover:bg-[#ab8134] text-white px-8 py-2 uppercase"
                     >
-                      Generate Instant Quotation
+                      {isSubmitting ? "Processing..." : "Generate Instant Quotation"}
                     </Button>
                   </div>
                 </form>
