@@ -146,60 +146,12 @@ export default function QuotationForm() {
       const quotation = generateQuotation(fullData);
       setQuotationData(quotation);
       
-      // Create the lead in Zoho CRM
-      try {
-        console.log('Preparing to send lead to Zoho CRM...');
-        
-        const leadData = {
-          First_Name: data.firstName,
-          Last_Name: data.lastName,
-          Email: data.email,
-          Phone: `${data.countryCode}${data.mobile}`,
-          Description: `Business Setup Request - ${data.type} in ${data.emirate}
-Business Activities: ${data.businessActivities.join(", ")}
-Office Space: ${data.officeSpace}
-Shareholders: ${data.shareholders}
-Visas: ${data.visas}
-Nationality: ${data.nationality}
-Quotation Number: ${quotation.quotationNumber}`,
-          Lead_Source: "Website - AI Quotation",
-          Company: `${data.firstName} ${data.lastName} Business`,
-          // Custom fields specific to business setup
-          Quotation_Type: data.type,
-          Emirate: data.emirate,
-          Visas_Required: data.visas,
-          Shareholders: data.shareholders
-        };
-        
-        // Send data to Zoho CRM using our server-side API endpoint
-        console.log('Sending data to server API endpoint...');
-        const response = await fetch('/api/zoho/create-lead', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(leadData),
-        });
-        
-        const result = await response.json();
-        
-        if (!result.success) {
-          console.log('Lead creation had an issue:', result.message);
-          // Don't throw an error, just log it and continue
-        } else {
-          console.log('Lead created successfully in Zoho CRM:', result);
-          // Display success toast with CRM confirmation
-          toast({
-            title: "Lead Saved",
-            description: "Your information has been saved to our CRM system and our team will contact you shortly.",
-            variant: "default",
-          });
-        }
-      } catch (error) {
-        console.error('Error creating lead in Zoho CRM:', error);
-        // Don't stop the process if Zoho integration fails
-        console.log('Continuing with quotation generation despite Zoho CRM error');
-      }
+      // Display success toast
+      toast({
+        title: "Success",
+        description: "Your quotation has been generated successfully.",
+        variant: "default",
+      });
       
       // Show the quotation to the user
       setShowQuotation(true);
