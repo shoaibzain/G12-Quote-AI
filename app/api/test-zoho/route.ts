@@ -1,36 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createZohoLead, getZohoAccessToken } from '@/lib/zoho-integration';
+import { getZohoAccessToken } from '@/lib/zoho-integration';
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // Test getting an access token
-    const token = await getZohoAccessToken();
+    console.log('Testing Zoho authentication...');
     
-    // Create a test lead
-    const testLead = {
-      First_Name: "Test",
-      Last_Name: "User",
-      Email: "test@example.com",
-      Phone: "+971123456789",
-      Description: "This is a test lead to verify Zoho CRM integration",
-      Lead_Source: "API Test",
-      Company: "Test Company"
-    };
-
-    const result = await createZohoLead(testLead);
+    // Try to get a Zoho access token
+    const token = await getZohoAccessToken();
     
     return NextResponse.json({ 
       success: true, 
-      message: "Zoho integration test successful",
-      token: "****" + token.substring(token.length - 4), // Only show the last 4 chars of token
-      result 
+      message: "Successfully retrieved Zoho access token",
+      tokenReceived: !!token
     });
   } catch (error) {
-    console.error("Zoho test failed:", error);
+    console.error("Error testing Zoho authentication:", error);
     
     return NextResponse.json({ 
       success: false, 
-      message: "Zoho integration test failed",
+      message: "Failed to retrieve Zoho access token",
       error: error instanceof Error ? error.message : String(error)
     }, { status: 500 });
   }

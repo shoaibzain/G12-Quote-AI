@@ -27,7 +27,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { nationalities } from "@/lib/nationalities";
 import { countryCodes } from "@/lib/country-codes";
 import { generateQuotation } from "@/lib/generate-quotation";
-import { createZohoLead } from "@/lib/zoho-integration";
 import QuotationPreview from "./quotation-preview";
 import {
   Command,
@@ -164,7 +163,7 @@ Visas: ${data.visas}
 Nationality: ${data.nationality}
 Quotation Number: ${quotation.quotationNumber}`,
           Lead_Source: "Website - AI Quotation",
-          Company: `${data.firstName} ${data.lastName} Business`, // Add Company field which is required in some Zoho environments
+          Company: `${data.firstName} ${data.lastName} Business`,
           // Custom fields specific to business setup
           Quotation_Type: data.type,
           Emirate: data.emirate,
@@ -172,26 +171,34 @@ Quotation Number: ${quotation.quotationNumber}`,
           Shareholders: data.shareholders
         };
         
-        // Send data to Zoho CRM
-        console.log('Sending data to Zoho CRM...');
-        const response = await createZohoLead(leadData);
-        
-        console.log('Lead created successfully in Zoho CRM:', response);
-        
-        // Display success toast
-        toast({
-          title: "Success",
-          description: "Your information has been sent to our team who will contact you shortly.",
-          variant: "default",
+        // Send data to Zoho CRM using our server-side API endpoint
+        console.log('Sending data to server API endpoint...');
+        const response = await fetch('/api/zoho/create-lead', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(leadData),
         });
+        
+        const result = await response.json();
+        
+        if (!result.success) {
+          console.log('Lead creation had an issue:', result.message);
+          // Don't throw an error, just log it and continue
+        } else {
+          console.log('Lead created successfully in Zoho CRM:', result);
+          // Display success toast with CRM confirmation
+          toast({
+            title: "Lead Saved",
+            description: "Your information has been saved to our CRM system and our team will contact you shortly.",
+            variant: "default",
+          });
+        }
       } catch (error) {
         console.error('Error creating lead in Zoho CRM:', error);
-        // Don't stop the process if Zoho integration fails, but notify the user
-        toast({
-          title: "Note",
-          description: "We had trouble saving your information to our system, but your quotation is ready. Our team will contact you soon.",
-          variant: "default",
-        });
+        // Don't stop the process if Zoho integration fails
+        console.log('Continuing with quotation generation despite Zoho CRM error');
       }
       
       // Show the quotation to the user

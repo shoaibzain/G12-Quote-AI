@@ -6,9 +6,10 @@
 
 // Configuration for Zoho API
 const ZOHO_CONFIG = {
-  clientId: '1000.TWCXX40GPZBCTE7XDT0ZMUSN2E23WV',
-  clientSecret: '245bc4acc64eb98918dac5e2a1da85c314c537e2a9',
-  refreshToken: '1000.16fbe2cb1d4dfb1a8bfdb644e46913c6.f5252bc07c365182bd17e544cd6270',
+  // Update these values with your actual credentials from the Zoho Developer Console
+  clientId: process.env.ZOHO_CLIENT_ID || '1000.TWCXX40GPZBCTE7XDT0ZMUSN2E23WV',
+  clientSecret: process.env.ZOHO_CLIENT_SECRET || '245bc4acc64eb98918dac5e2a1da85c314c537e2a9',
+  refreshToken: process.env.ZOHO_REFRESH_TOKEN || '1000.16fbe2cb1d4dfb1a8bfdb644e46913c6.f5252bc07c365182bd17e544cd6270',
   accountsUrl: 'https://accounts.zoho.com',
   // Using the more specific API URL for the Middle East region (Dubai is in UAE)
   apiBaseUrl: 'https://www.zohoapis.com',
